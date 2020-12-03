@@ -75,13 +75,16 @@ const newRestaurant=await db.query("INSERT INTO restaurants (name,location,price
 });
 
 //update a restaurant
-app.put('/api/v1/restaurants/:id',(req,res)=>{
+app.put('/api/v1/restaurants/:id',async (req,res)=>{
     try{
-        console.log(req.params)
+        const {id}=req.params;
+        const {name,location,price_range}=req.body;
+        const updatedRestaurant=await db.query("UPDATE restaurants SET name=$1,location=$2,price_range=$3 WHERE id=$4 RETURNING *",[name,location,price_range,id])
+        console.log(updatedRestaurant.rows[0])
         res.status(200).json({
             'status':'success',
             'data':{
-                'restaurant':'McDonalds'
+                'restaurant':updatedRestaurant.rows[0]
             }
             
         })
@@ -91,8 +94,10 @@ console.error(err.message)
     
 })
 // delete  restaurant
-app.delete('/api/v1/restaurants/:id',(req,res)=>{
+app.delete('/api/v1/restaurants/:id',async (req,res)=>{
     try {
+        const {id}=req.params;
+        const deletedRestaurant=await db.query("DELETE FROM restaurants WHERE id=$1",[id])
         res.status(204).json({
             'status':'success'           
             
