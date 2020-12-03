@@ -1,6 +1,6 @@
 import React , {useState, createContext} from 'react';
 
-export const RestaurantContext=createContext();
+export const RestaurantsContext=createContext();
 
 export const RestaurantContextProvider=(props)=>{
 
@@ -11,8 +11,8 @@ export const RestaurantContextProvider=(props)=>{
     }
 
     return(
-        <RestaurantContext.Provider value={{restaurants,setRestaurants,addRestaurants}}>
+        <RestaurantsContext.Provider value={{restaurants,setRestaurants,addRestaurants}}>
             {props.children}
-        </RestaurantContext.Provider>
+        </RestaurantsContext.Provider>
     )
 }

@@ -1,8 +1,10 @@
 import React ,{useEffect,useContext} from 'react'
+import { useHistory } from 'react-router-dom';
 import RestaurantFinder from '../apis/RestaurantFinder';
-import { RestaurantContext } from '../context/RestaurantsContext';
+import { RestaurantsContext } from '../context/RestaurantsContext';
 const RestaurantList = (props) => {
-const {restaurants,setRestaurants} = useContext(RestaurantContext)
+    let history=useHistory();
+const {restaurants,setRestaurants} = useContext(RestaurantsContext)
     useEffect( ()=>{
         const fetchData=async()=>{
         try {
@@ -17,13 +19,22 @@ const {restaurants,setRestaurants} = useContext(RestaurantContext)
     },[]);
 
     const handleDeleteRestaurant=async (id)=>{
-      try {
-          const response=await RestaurantFinder.delete(`/${id}`)
-      } catch (err) {
-          console.error(err.message)
-      }
-     
-  }
+        try {
+            const response=await RestaurantFinder.delete(`/${id}`)
+            setRestaurants(restaurants.filter((restaurant)=>{
+                return restaurant.id !==id
+            }))
+        } catch (err) {
+            console.error(err.message)
+        }
+       
+    };
+
+    const handleUpdateRestaurant=(id)=>{
+        history.push(`/restaurants/${id}/update`)
+    }
+
+
 
 const restaurantArray=restaurants.map((restaurant)=>{
     return(
@@ -32,7 +43,7 @@ const restaurantArray=restaurants.map((restaurant)=>{
       <td>{restaurant.location}</td>
       <td>{'$'.repeat(restaurant.price_range)}</td>
       <td>Reviews</td>
-      <td><button className='btn btn-warning'>Update</button></td>
+      <td><button onClick={()=>handleUpdateRestaurant(restaurant.id)} className='btn btn-warning'>Update</button></td>
       <td><button onClick={()=>handleDeleteRestaurant(restaurant.id)} className='btn btn-danger'>Delete</button></td>
 </tr>
     )
