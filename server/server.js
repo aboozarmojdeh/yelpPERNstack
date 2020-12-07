@@ -39,11 +39,13 @@ app.get('/api/v1/restaurants', async (req,res)=>{
      try {
         const {id}=req.params;
         const restaurant=await db.query("SELECT * FROM restaurants WHERE id=$1",[id]);
+        const reviews=await db.query("SELECT * FROM reviews WHERE restaurant_id=$1",[id]);
         console.log(req.params)
         res.status(200).json({
             'status':'success',
             'data':{
-                'restaurant':restaurant.rows[0]
+                'restaurant':restaurant.rows[0],
+                'reviews':reviews.rows
             }
             
         })
@@ -107,6 +109,25 @@ app.delete('/api/v1/restaurants/:id',async (req,res)=>{
     }
 })
 
+// // Get all reviews for a restaurant
+// app.get('/api/v1/restaurants/:id/reviews',async (req,res)=>{
+//     try {
+//         const {id}=req.params;
+//         const allReviews=await db.query('SELECT * FROM reviews WHERE restaurant_id=$1',[id]);
+//         console.log('route handler ran')
+//         res.status(200).json({
+//             'status':'success',
+//             'results':allReviews.rows.length,
+//             'data':{
+//                 'reviews':allReviews.rows
+//             }
+            
+//         })
+//     } catch (err) {
+//         console.error(err.message)
+//     }
+    
+// })
 
 const PORT=process.env.PORT || 5000;
 app.listen(PORT,()=>{
