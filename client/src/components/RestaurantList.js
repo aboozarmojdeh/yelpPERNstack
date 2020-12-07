@@ -18,7 +18,8 @@ const {restaurants,setRestaurants} = useContext(RestaurantsContext)
         fetchData();
     },[]);
 
-    const handleDeleteRestaurant=async (id)=>{
+    const handleDeleteRestaurant=async (e,id)=>{
+        e.stopPropagation();
         try {
             const response=await RestaurantFinder.delete(`/${id}`)
             setRestaurants(restaurants.filter((restaurant)=>{
@@ -30,21 +31,24 @@ const {restaurants,setRestaurants} = useContext(RestaurantsContext)
        
     };
 
-    const handleUpdateRestaurant=(id)=>{
+    const handleUpdateRestaurant=(e,id)=>{
+        e.stopPropagation();
         history.push(`/restaurants/${id}/update`)
     }
 
-
+const handleRestaurantSelect=(id)=>{
+    history.push(`/restaurants/${id}`)
+}
 
 const restaurantArray=restaurants.map((restaurant)=>{
     return(
-<tr key={restaurant.id}>
+<tr onClick={()=>handleRestaurantSelect(restaurant.id)} key={restaurant.id}>
 <td>{restaurant.name}</td>
       <td>{restaurant.location}</td>
       <td>{'$'.repeat(restaurant.price_range)}</td>
       <td>Reviews</td>
-      <td><button onClick={()=>handleUpdateRestaurant(restaurant.id)} className='btn btn-warning'>Update</button></td>
-      <td><button onClick={()=>handleDeleteRestaurant(restaurant.id)} className='btn btn-danger'>Delete</button></td>
+      <td><button onClick={(e)=>handleUpdateRestaurant(e,restaurant.id)} className='btn btn-warning'>Update</button></td>
+      <td><button onClick={(e)=>handleDeleteRestaurant(e,restaurant.id)} className='btn btn-danger'>Delete</button></td>
 </tr>
     )
 })
